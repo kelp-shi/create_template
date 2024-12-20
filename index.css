@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+}
+
+#container {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#context-section {
+    width: 250px;
+    background: #f9f9f9;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+#context-controls label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#context-list {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+#editor-section, #viewer-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#editor-section {
+    flex-grow: 1;
+    width: 50%;
+    min-width: 200px;
+}
+
+#viewer-section {
+    flex-grow: 1;
+    position: relative;
+}
+
+#ruler {
+    background: #f0f0f0;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+#resizer {
+    width: 5px;
+    cursor: col-resize;
+    background: #ddd;
+    position: relative;
+    z-index: 10;
+}
+
+#preview-frame {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+    height: calc(100% - 30px);
+}
+
+.tabs {
+    background: #f0f0f0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tab-button {
+    border: none;
+    background: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tab-button.active {
+    background: #ddd;
+    font-weight: bold;
+}
+
+#editor-container {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.context-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+}

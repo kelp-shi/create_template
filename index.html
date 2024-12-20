@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resizable Editor with Context</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="container">
+        <div id="context-section">
+            <h3>Context Settings</h3>
+            <div id="context-controls">
+                <label>
+                    Context Name:
+                    <input type="text" id="context-name" placeholder="e.g., User">
+                </label>
+                <label>
+                    Key:
+                    <input type="text" id="context-key" placeholder="e.g., email">
+                </label>
+                <label>
+                    Value:
+                    <input type="text" id="context-value" placeholder="e.g., user@example.com">
+                </label>
+                <button id="add-context">Add Context</button>
+            </div>
+            <div id="context-list"></div>
+        </div>
+        <div id="editor-section">
+            <div class="tabs">
+                <button class="tab-button active" data-lang="html">HTML</button>
+                <button class="tab-button" data-lang="css">CSS</button>
+            </div>
+            <div id="editor-container"></div>
+        </div>
+        <div id="resizer"></div>
+        <div id="viewer-section">
+            <div id="ruler">
+                <span id="viewer-width">Width: 50%</span>
+            </div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
