@@ -36,12 +36,12 @@ body {
     flex-wrap: wrap;
 }
 
-.key-value-pair input {
-    margin-right: 10px;
-}
-
 #add-context{
     margin-top: 10px;
+}
+
+.key-value-pair input {
+    margin-right: 10px;
 }
 
 #context-list {
@@ -127,4 +127,8 @@ body {
     cursor: pointer;
     padding: 5px;
     font-size: 12px;
+}
+
+#editor-section, #viewer-section {
+    transition: width 0.1s ease;
 }
