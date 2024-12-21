@@ -12,17 +12,16 @@
             <h3>Context Settings</h3>
             <div id="context-controls">
                 <label>
-                    Context Name:
+                    Context Name: 
                     <input type="text" id="context-name" placeholder="e.g., User">
                 </label>
-                <label>
-                    Key:
-                    <input type="text" id="context-key" placeholder="e.g., email">
-                </label>
-                <label>
-                    Value:
-                    <input type="text" id="context-value" placeholder="e.g., user@example.com">
-                </label>
+                <div id="key-value-pairs">
+                    <div class="key-value-pair">
+                        <label>Key: <input type="text" class="context-key" placeholder="e.g., name"></label>
+                        <label>Value: <input type="text" class="context-value" placeholder="e.g., yuuya"></label>
+                    </div>
+                </div>
+                <button id="add-key-value">Add Key-Value Pair</button>
                 <button id="add-context">Add Context</button>
             </div>
             <div id="context-list"></div>

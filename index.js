@@ -15,22 +15,35 @@ require(['vs/editor/editor.main'], function () {
     const viewerSection = document.getElementById('viewer-section');
     const resizer = document.getElementById('resizer');
     const contextNameInput = document.getElementById('context-name');
-    const contextKeyInput = document.getElementById('context-key');
-    const contextValueInput = document.getElementById('context-value');
+    const keyValuePairsContainer = document.getElementById('key-value-pairs');
+    const addKeyValueButton = document.getElementById('add-key-value');
     const addContextButton = document.getElementById('add-context');
     const contextList = document.getElementById('context-list');
 
     // コンテキスト操作
+    addKeyValueButton.addEventListener('click', () => {
+        const newKeyValuePair = document.createElement('div');
+        newKeyValuePair.classList.add('key-value-pair');
+        newKeyValuePair.innerHTML = `
+            <label>Key: <input type="text" class="context-key" placeholder="e.g., email"></label>
+            <label>Value: <input type="text" class="context-value" placeholder="e.g., user@example.com"></label>
+        `;
+        keyValuePairsContainer.appendChild(newKeyValuePair);
+    });
+
     addContextButton.addEventListener('click', () => {
         const name = contextNameInput.value.trim();
-        const key = contextKeyInput.value.trim();
-        const value = contextValueInput.value.trim();
+        const keyValuePairs = Array.from(document.querySelectorAll('.key-value-pair')).map(pair => {
+            const key = pair.querySelector('.context-key').value.trim();
+            const value = pair.querySelector('.context-value').value.trim();
+            return { key, value };
+        });
 
-        if (name && key && value) {
+        if (name && keyValuePairs.length > 0) {
             if (!contexts[name]) {
-                contexts[name] = {};
+                contexts[name] = [];
             }
-            contexts[name][key] = value;
+            contexts[name].push(...keyValuePairs);
             updateContextList();
             updatePreview();
         }
@@ -38,16 +51,14 @@ require(['vs/editor/editor.main'], function () {
 
     function updateContextList() {
         contextList.innerHTML = Object.entries(contexts)
-            .map(([name, keys]) => {
-                const keysHtml = Object.entries(keys)
-                    .map(([key, value]) => {
-                        return `<div class="context-item">
-                            <span>{{ ${name}.${key} }}: ${value}</span>
-                            <button class="delete-btn" data-name="${name}" data-key="${key}">Delete</button>
-                        </div>`;
-                    })
-                    .join('');
-                return `<div><strong>${name}</strong><div>${keysHtml}</div></div>`;
+            .map(([name, keyValuePairs]) => {
+                const keyValueHtml = keyValuePairs.map(({ key, value }) => {
+                    return `<div class="context-item">
+                        <span>{{ ${name}.${key} }}: ${value}</span>
+                        <button class="delete-btn" data-name="${name}" data-key="${key}">Delete</button>
+                    </div>`;
+                }).join('');
+                return `<div><strong>${name}</strong><div>${keyValueHtml}</div></div>`;
             })
             .join('');
 
@@ -57,8 +68,8 @@ require(['vs/editor/editor.main'], function () {
             button.addEventListener('click', (e) => {
                 const name = e.target.getAttribute('data-name');
                 const key = e.target.getAttribute('data-key');
-                delete contexts[name][key];
-                if (Object.keys(contexts[name]).length === 0) {
+                contexts[name] = contexts[name].filter(item => item.key !== key);
+                if (contexts[name].length === 0) {
                     delete contexts[name];
                 }
                 updateContextList();
@@ -70,7 +81,9 @@ require(['vs/editor/editor.main'], function () {
     function replaceContexts(content) {
         return content.replace(/{{\s*(\w+\.\w+)\s*}}/g, (match, p1) => {
             const [contextName, contextKey] = p1.split('.');
-            return contexts[contextName] && contexts[contextName][contextKey] ? contexts[contextName][contextKey] : match;
+            // コンテキストが存在する場合に値を置き換える
+            const context = contexts[contextName] && contexts[contextName].find(item => item.key === contextKey);
+            return context ? context.value : match;
         });
     }
 
@@ -88,43 +101,41 @@ require(['vs/editor/editor.main'], function () {
         currentEditor.onDidChangeModelContent(() => {
             if (currentTab === 'html') {
                 htmlContent = currentEditor.getValue();
-            } else if (currentTab === 'css') {
+            } else {
                 cssContent = currentEditor.getValue();
             }
             updatePreview();
         });
     }
 
-    function updatePreview() {
-        const cssWithStyle = `<style>${cssContent}</style>`;
-        const frameContent = replaceContexts(`<!DOCTYPE html>
-<html>
-<head>
-${cssWithStyle}
-</head>
-<body>
-${htmlContent}
-</body>
-</html>`);
-        const frameDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-        frameDoc.open();
-        frameDoc.write(frameContent);
-        frameDoc.close();
-    }
-
     tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (e) => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            currentTab = button.getAttribute('data-lang');
+            e.target.classList.add('active');
+            currentTab = e.target.getAttribute('data-lang');
             if (currentTab === 'html') {
                 initializeEditor('html', htmlContent);
-            } else if (currentTab === 'css') {
+            } else {
                 initializeEditor('css', cssContent);
             }
         });
     });
+
+    function updatePreview() {
+        const htmlWithContexts = replaceContexts(htmlContent);
+        const cssWithContexts = replaceContexts(cssContent);
+    
+        // HTMLのコンテンツをプレビュー用iframeに挿入
+        const iframeDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+        iframeDocument.open();
+        iframeDocument.write(htmlWithContexts);
+        iframeDocument.close();
+    
+        // CSSをiframeに追加
+        const styleTag = iframeDocument.querySelector('style') || iframeDocument.createElement('style');
+        styleTag.textContent = cssWithContexts;
+        iframeDocument.head.appendChild(styleTag);
+    }
 
     resizer.addEventListener('mousedown', function (e) {
         document.body.style.cursor = 'col-resize';
@@ -149,5 +160,4 @@ ${htmlContent}
     });
 
     initializeEditor('html', htmlContent);
-    updatePreview();
 });
