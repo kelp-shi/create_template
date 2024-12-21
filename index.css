@@ -33,10 +33,15 @@ body {
 .key-value-pair {
     display: flex;
     margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 
 .key-value-pair input {
     margin-right: 10px;
+}
+
+#add-context{
+    margin-top: 10px;
 }
 
 #context-list {

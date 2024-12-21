@@ -2,25 +2,19 @@ require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs
 
 require(['vs/editor/editor.main'], function () {
     let currentEditor = null;
-    let htmlContent = '<!DOCTYPE html>\n<html>\n<head>\n<style>\n</style>\n</head>\n<body>\n{{ greeting }}\n</body>\n</html>';
+    let htmlContent = '<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n    <!--inner-->\n  </body>\n</html>';
     let cssContent = 'body {\n    font-family: Arial, sans-serif;\n}';
     let currentTab = 'html';
     const contexts = {};
-
     const editorContainer = document.getElementById('editor-container');
-    const previewFrame = document.getElementById('preview-frame');
     const tabButtons = document.querySelectorAll('.tab-button');
-    const viewerWidthLabel = document.getElementById('viewer-width');
-    const editorSection = document.getElementById('editor-section');
-    const viewerSection = document.getElementById('viewer-section');
-    const resizer = document.getElementById('resizer');
     const contextNameInput = document.getElementById('context-name');
     const keyValuePairsContainer = document.getElementById('key-value-pairs');
     const addKeyValueButton = document.getElementById('add-key-value');
     const addContextButton = document.getElementById('add-context');
     const contextList = document.getElementById('context-list');
 
-    // コンテキスト操作
+    // コンテキスト追加
     addKeyValueButton.addEventListener('click', () => {
         const newKeyValuePair = document.createElement('div');
         newKeyValuePair.classList.add('key-value-pair');
@@ -49,6 +43,7 @@ require(['vs/editor/editor.main'], function () {
         }
     });
 
+    //コンテキスト更新処理
     function updateContextList() {
         contextList.innerHTML = Object.entries(contexts)
             .map(([name, keyValuePairs]) => {
@@ -78,15 +73,7 @@ require(['vs/editor/editor.main'], function () {
         });
     }
 
-    function replaceContexts(content) {
-        return content.replace(/{{\s*(\w+\.\w+)\s*}}/g, (match, p1) => {
-            const [contextName, contextKey] = p1.split('.');
-            // コンテキストが存在する場合に値を置き換える
-            const context = contexts[contextName] && contexts[contextName].find(item => item.key === contextKey);
-            return context ? context.value : match;
-        });
-    }
-
+    //エディター初期化処理
     function initializeEditor(language, value) {
         if (currentEditor) {
             currentEditor.dispose();
@@ -108,6 +95,7 @@ require(['vs/editor/editor.main'], function () {
         });
     }
 
+    //タブ切り替え処理
     tabButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -119,44 +107,6 @@ require(['vs/editor/editor.main'], function () {
                 initializeEditor('css', cssContent);
             }
         });
-    });
-
-    function updatePreview() {
-        const htmlWithContexts = replaceContexts(htmlContent);
-        const cssWithContexts = replaceContexts(cssContent);
-    
-        // HTMLのコンテンツをプレビュー用iframeに挿入
-        const iframeDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
-        iframeDocument.open();
-        iframeDocument.write(htmlWithContexts);
-        iframeDocument.close();
-    
-        // CSSをiframeに追加
-        const styleTag = iframeDocument.querySelector('style') || iframeDocument.createElement('style');
-        styleTag.textContent = cssWithContexts;
-        iframeDocument.head.appendChild(styleTag);
-    }
-
-    resizer.addEventListener('mousedown', function (e) {
-        document.body.style.cursor = 'col-resize';
-        const startX = e.pageX;
-        const startWidth = editorSection.offsetWidth;
-
-        function onMouseMove(e) {
-            const delta = e.pageX - startX;
-            const newWidth = startWidth + delta;
-            editorSection.style.width = `${newWidth}px`;
-            viewerWidthLabel.textContent = `Width: ${viewerSection.offsetWidth}px`;
-        }
-
-        function onMouseUp() {
-            document.body.style.cursor = 'default';
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
     });
 
     initializeEditor('html', htmlContent);
