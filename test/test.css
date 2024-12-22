@@ -1,13 +1,13 @@
-body {
+body{
   margin: 0;
   padding: 0;
 }
 .gutter {
-  cursor: ew-resize;
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-color: darkgray;
+    cursor: ew-resize;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-color: darkgray;
 }
 
 .page-wrap {
@@ -20,30 +20,29 @@ body {
 }
 
 /*--context--*/
-#one {
+#one{
   padding-left: 10px;
 }
-.key-value-pair {
+.key-value-pair{
   display: flex;
   flex-wrap: wrap;
 }
-.context-value {
+.context-value{
   margin-top: 10px;
 }
-#add-context {
+#add-context{
   margin-top: 10px;
 }
 #context-list {
   margin-top: 20px;
   font-size: 14px;
 }
-.remove-pair-btn {
+.remove-pair-btn{
   margin-top: 10px;
 }
 
 /*--editor--*/
-.editor-section,
-.viewer-section {
+.editor-section, .viewer-section {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -64,16 +63,16 @@ body {
 }
 
 /*--viewer--*/
-.viewer-content {
+.viewer-content{
   display: flex;
   justify-content: center;
 }
 
-#refresh {
+#refresh{
   margin: 5px auto;
 }
 
-#controls {
+#controls{
   margin-left: 30px;
 }
 .editor-section {
@@ -92,6 +91,6 @@ body {
   position: relative;
 }
 
-#preview-frame {
+#preview-frame{
   height: 100vh;
 }
