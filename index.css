@@ -40,6 +40,10 @@ body {
 .remove-pair-btn {
   margin-top: 10px;
 }
+.split img{
+  position: absolute;
+  bottom: 0;
+}
 
 /*--editor--*/
 .editor-section,
